@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+
+<style type="text/css">
+.err {
+background:none repeat scroll 0 0 #494949;
+border:medium solid orange;
+color:orange;
+padding:5px;
+width:90%;
+}
+.msg {
+background:none repeat scroll 0 0 #CBCBCB;
+border:medium solid black;
+color:white;
+padding:5px;
+width:90%;
+}
+ </style>
+
+</head>
+
+<body>
+	{% if msg %}
+		<p class='{{msg_class}}'>{{msg}}</p>
+	{% endif %}
+	<h3>Choose a photo to upload</h3>
+<form action='{{upload_url}}' id='image_form' method="POST" enctype="multipart/form-data">
+	<input type="file" name="file"><br> 
+	<input id="gae_image_submit" type="submit" name="submit" value="Submit"> 
+</form>
+
+</body>
+</html>

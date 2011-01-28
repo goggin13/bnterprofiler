@@ -1,0 +1,61 @@
+
+import os
+from google.appengine.ext.webapp import template
+from models import ImageTheme
+from models import ImageThemeCache
+from google.appengine.ext import webapp
+from google.appengine.api import memcache
+from google.appengine.ext import db
+import functions
+
+class FlushCache(webapp.RequestHandler):
+    def get(self):
+        memcache.flush_all()
+        theme_label = self.request.get('theme')
+        functions.flushCache(theme_label)
+        self.response.out.write('caches cleared')
+
+class API(webapp.RequestHandler):
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), '../html/api.html')
+        self.response.out.write(template.render(path,{})) 
+
+class Themes(webapp.RequestHandler):
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), '../html/themes.html')
+        self.response.out.write(template.render(path,{ 'themes' : ImageTheme.all() })) 
+
+class Test(webapp.RequestHandler):
+    def get(self):
+        
+        img_ids = [{'id':1, 
+                    'size': 44,
+                    'dims': '450x438',
+                    },
+                    {'id':2, 
+                    'size': 136,
+                    'dims': '1024x768',
+                    },
+                    {'id':3, 
+                    'size': 4400,
+                    'dims': '4000x3000',
+                    },
+                    {'id':4, 
+                    'size': 1100,
+                    'dims': '2270x1704',
+                    },
+                    {'id':5, 
+                    'size': 252,
+                    'dims': '600x900',
+                    }
+                   ]
+        test_themes = ['default','small_square','medium_square','large_square',
+                        'thin_x_strip', 'thin_y_strip']
+
+        template_values = {
+            'test_images' : img_ids,
+            'test_themes' : test_themes
+        }
+
+        path = os.path.join(os.path.dirname(__file__), '../html/test.html')
+        self.response.out.write(template.render(path,template_values)) 

@@ -1,0 +1,2 @@
+This project interacts with the API from Bnter.com, and provides via some simple javascript an interface
+to generate code that can be copy pasted onto another side, which will pull down a users conversations.
