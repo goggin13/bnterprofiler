@@ -1,0 +1,99 @@
+
+#bnterprofile{
+  -moz-border-radius: 12px; /* FF1+ */
+  -webkit-border-radius: 12px; /* Saf3+, Chrome */
+  border-radius: 12px; /* Opera 10.5, IE 9 */ 
+  padding:2px;
+}
+
+#bnterprofile #bnter_header{
+	padding:5px;
+}
+
+#bnterprofile #bnter_header a img {
+	color:transparent;
+}
+
+#bnterprofile .message{
+	padding:5px;
+	overflow:hidden;
+	/*margin:-15px -6px 0 225px;*/
+    width: 265px;
+}
+
+#bnterprofile .message:not(:first-child){
+	margin-top:-10px;
+}
+
+#bnterprofile .message.left{
+}
+
+#bnterprofile .message .bottom{
+	height: 29px;
+	background:url("../message_bubble.png") no-repeat scroll -267px -5px transparent;
+}
+
+#bnterprofile .message.left .bottom{
+	background:url("../message_bubble.png") no-repeat scroll 0 -1px transparent;
+}
+
+#bnterprofile .message .top{
+	height: 10px;
+	background: url("../message_bubble.png") no-repeat scroll -802px 0 transparent;
+}
+
+#bnterprofile .message .middle{
+	background: url("../message_bubble.png") repeat-y scroll -534px 0 transparent;
+	/*margin: -22px 0 0;
+    padding: 0 20px 3px 18px;*/	
+	padding:0px 10px;
+
+}
+
+#bnterprofile .content{
+	overflow: hidden;
+}
+
+#bnterprofile .profile_image img{
+	width:40px;
+}
+
+#bnterprofile .profile_image{
+	margin:5px 0px;
+}
+
+#bnterprofile .profile_image.right{
+	margin:-40px 10px 5px 0px;
+}
+#bnterprofile .profile_image.left{
+	margin:0px 0px 10px 5px;
+}
+#bnterprofile .profile_image.left span{
+	margin-left:5px;
+}
+#bnterprofile .profile_image.right span{
+	margin-right:5px;
+}
+#bnterprofile .username.right{
+	margin-top:20px;
+}
+
+#bnterprofile .clear{
+	clear:both;
+}
+
+#bnterprofile .conversation{
+	margin:5px 0px;
+  -moz-border-radius: 12px; /* FF1+ */
+  -webkit-border-radius: 12px; /* Saf3+, Chrome */
+  border-radius: 12px; /* Opera 10.5, IE 9 */
+}
+
+
+
+#bnterprofile .left{ float:left; text-align:left;}
+#bnterprofile .right{float:right; text-align:right;}
+
+#bnterprofile #username img{
+	float:left;
+}

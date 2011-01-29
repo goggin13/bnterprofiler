@@ -1,0 +1,23 @@
+
+body{
+	background: darkgray;
+	color:white;
+}
+
+#container{
+	width: 940px;
+	background: black;
+	margin:0px auto;
+	padding:10px;
+	-moz-border-radius: 12px; /* FF1+ */
+  	-webkit-border-radius: 12px; /* Saf3+, Chrome */
+  	border-radius: 12px; /* Opera 10.5, IE 9 */ 
+}
+
+#bnterprofile{
+	float:right;
+}
+
+.clear{
+	clear:both;
+}
