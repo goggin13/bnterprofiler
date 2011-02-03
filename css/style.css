@@ -1,11 +1,11 @@
 
 body{
-	background: darkgray;
+	background: #DDDDDD;
 	color:white;
 }
 
 #container{
-	width: 940px;
+	width: 800px;
 	background: black;
 	margin:0px auto;
 	padding:10px;
@@ -14,10 +14,86 @@ body{
   	border-radius: 12px; /* Opera 10.5, IE 9 */ 
 }
 
+.welcome{
+	width:400px;
+}
+
 #bnterprofile{
 	float:right;
+	margin-top:10px;
 }
 
 .clear{
 	clear:both;
+}
+
+#header{
+	background:gray;
+	padding:10px;
+}
+
+#header a{
+	background: none repeat scroll 0 0 black;
+    border: medium solid white;
+    color: #FF6600;
+    padding: 5px 46px;
+}
+
+a{
+	text-decoration:none;
+	color:blue;
+}
+
+th{
+	text-align:left;
+}
+
+tr{
+	line-height:2em;
+}
+
+td{
+	padding-left:30px;
+}
+
+input.color_chooser{
+	width:60px;
+	float:left;
+	margin-right:10px;
+}
+
+.color_demo{
+	float: right;
+    height: 20px;
+    width: 20px;
+	border: thin solid white;
+}
+
+#submit{
+	background: none repeat scroll 0 0 darkgray;
+    border: thin solid white;
+    height: 30px;
+}
+
+#submit:hover{
+	background:black;
+	cursor:pointer;
+}
+
+.submit_row{
+	text-align:center;
+}
+
+.left{ float:left;}
+.right{float:right;}
+
+.color_picker_hsb_h,
+.color_picker_hsb_s,
+.color_picker_hsb_b{
+	display: none;
+}
+
+#result_code{
+  height: 185px;
+    width: 450px;
 }

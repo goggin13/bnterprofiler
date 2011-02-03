@@ -1,180 +1,255 @@
 
-/* for now, load up settings object and pass it to profile */
-$(document).ready(function(){
-	var options  = []
-	
-	options['shell_background'] = '#CCDDEE';
-	options['shell_color'] = '#CCAAEE';
-	options['conversation_background'] = '#AABBAA';
-	options['link_color'] = '#EEDDAA';
-	options['message_right_color'] = '#EEDD00';
-	options['message_left_color'] = '#DDEE00';
-	options['width'] = '270px';
-	options['link_color'] = '#000000';
-		
-	var username = 'goggin13';
-
-	new BnterProfiler(username, options);
-
-});
-
+var $xx = jQuery.noConflict(true);
 
 /* Object responsible for setting all of the colors that
  * are available to customize.  Directly sets CSS for
  * all of the relevant classes */
-function Settings(options){
-	
-	eProfile = $('#bnterprofile');
-	eProfile.css('width', options['width']);
-	eProfile.css('background', options['shell_background']);
-	eProfile.css('color', options['shell_color']);
-	
-	eMessages_left = $('.message.left');
-	eMessages_left.css('color', options['message_left_color']);
-	eMessages_right = $('.message.right');
-	eMessages_right.css('color', options['message_right_color']);
-	
-	
-	eConversations = $('.conversation');
-	eConversations.css('background', options['conversation_background']);	
+function Settings(options) {
+    
+    $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
+
+    this.Init = function (options) {
+        this.options = options;
+    };
+    
+    this.setSetting = function (property, value) {
+        this.options[property] = value;
+        this.CreateStyles();
+    };
+    
+    this.getSettings = function () {
+        return this.options;
+    };
+     
+    this.CreateStyles = function () {
+        var HTML = '', css = $xx('<style />');
+        
+        HTML += '#bnterprofile{ width:' + this.options.width + ';';
+        HTML += 'background:' + this.options.shell_background + ';';
+        HTML += 'color:' + this.options.shell_color + ';}';
+        
+        HTML += '#bnterprofile .message.left{ color:' + this.options.message_left_color + ';}';
+        HTML += '#bnterprofile .message.right{ color:' + this.options.message_right_color + ';}';
+        HTML += '#bnterprofile .conversation{background: ' + this.options.conversation_background + ';}';
+        HTML += '#bnterprofile a{ color: ' + this.options.link_color + '}';
+        
+        if ($xx('#bnterprofile_styles').length > 0) {
+            $xx('#bnterprofile_styles').remove();
+        }
+        
+        css.attr('id', 'bnterprofile_styles');
+        css.html(HTML);
+        $xx('head').append(css);
+    };
+    
+    this.Init(options);
+    this.CreateStyles();
+    
 }
 
 
-/* The top level profile object.  Builds itself on existing div,
- * <div id='bnterprofile'>, and inserts the rest of the HTML dynamically */
-function BnterProfiler(username, options){
-	var username = username;
-	var eProfile = $('#bnterprofile');	
-	
-	var HTML = "<div id='bnter_header'>";
-	HTML += '<p id="username" class="left">';
-	HTML += '<a href="http://www.bnter.com/' + username + '">' + username + '</a></p>';
-	HTML += '<a href="http://www.bnter.com"><img alt="" src="http://bnter.com/web/assets/images/logo-small-2.png" class="right"></a>';
-	HTML += '<div class="clear"></div></div>';
-	
-	var eHeader = $(HTML);
+/*
+ * JavaScript Pretty Date
+ * Copyright (c) 2008 John Resig (jquery.com)
+ * Licensed under the MIT license.
+ */
 
-	var conversations = Conversations(username, options);
-	
-	eProfile.append(eHeader);
-	eProfile.append(conversations);
-	
+// Takes an ISO time and returns a string representing how
+// long ago the date represents.
+function prettyDate(time) {
+    var date = new Date((time || "").replace(/-/g, "/").replace(/[TZ]/g, " ")),
+        diff = (((new Date()).getTime() - date.getTime()) / 1000),
+        day_diff = Math.floor(diff / 86400);
+            
+    if (isNaN(day_diff) || day_diff < 0 || day_diff >= 31) {
+        return;
+    }
+            
+	return day_diff == 0 && (
+			diff < 60 && "just now" ||
+			diff < 120 && "1 minute ago" ||
+			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+			diff < 7200 && "1 hour ago" ||
+			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+		day_diff == 1 && "Yesterday" ||
+		day_diff < 7 && day_diff + " days ago" ||
+		day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
 }
 
-/* The HTML for all the conversations displayed.  */
-function Conversations(username, options){
-	var url = "http://bnter.com/api/v1/user/conversations.json?user_screen_name=";
-	url += username;
-	url = "http://localhost:8080/js/sampleresponse2.js";
-	var HTML = $('<div id="conversations"></div>');
-	
-	$.getJSON(url, function(JSON) {
-	   $.each(JSON['conversations'], function(index, value) { 
-  			c = new Conversation(value); 
-			HTML.append(c.getHTML());
-		});
-		s = new Settings(options);
-	});
-	
-	return HTML;
+function unixToPrettyDate(unix_timestamp) {
+    var date, year, day, month, hours, minutes, seconds, formattedTime;
+    date = new Date(unix_timestamp * 1000);
+    year = date.getFullYear();
+    day = date.getDate();
+    month = date.getMonth() + 1;
+    hours = date.getHours();
+    minutes = date.getMinutes();
+    seconds = date.getSeconds();
+
+    formattedTime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes + ':' + seconds + 'Z';
+    return prettyDate(formattedTime);
 }
 
-/* A single conversation, all the messages involved between
- * 2 users, and also the display for the users themselves displayed 
- * underneath the messages */
-function Conversation(JSON, options){
-	var timestamp = JSON['unix_timestamp'];
-	var user1 = User(JSON['user'], true);
-	var left_user = user1.getScreenName();
-	user1 = user1.getHTML();
-	var user2 = new User(JSON['user_two'], false).getHTML();
-	
-	var messages = Messages(JSON['messages'], left_user);
-	
-	var HTML = '<div class="conversation">';
-	HTML += messages.getHTML();
-	HTML += '<div class="clear"></div>';
-	HTML += user1 + user2;
-	HTML += '<div class="clear"></div>';
-	HTML += '</div>';
-	HTML = $(HTML);
-	
-	self.getHTML = function() {
-		return HTML;
-	}
-	
-	return self;
+
+/* HTML for a single message */
+function Message(JSON, left_user) {
+    var text, sender, is_left, img_size, sender_img, HTML;
+    text = JSON.text;
+    sender = JSON.sender;
+    is_left = sender === left_user;
+    img_size = 75;
+    sender_img = JSON.profile_image_url.replace('?s=400', '?s=' + img_size);
+
+    HTML = '<div class="message ' + (is_left ? 'left' : 'right') + '" >';
+    HTML +=    '<div class="top"></div>';
+    HTML +=    '<div class="middle"><span class="content">' + text + '</span></div>';
+    HTML +=    '<div class="bottom"></div>';
+    HTML += '</div>';
+    HTML += '<div class="clear"></div>';
+    
+    this.getHTML = function () {
+        return HTML;
+    };
+    
+}
+
+/* HTML for all the messages in a conversation */
+function Messages(JSON, left_user) {
+    var messages, HTML;
+    messages = [];
+    HTML = '';
+    
+    $xx.each(JSON, function (index, value) { 
+        messages[index] = new Message(value, left_user); 
+        HTML += messages[index].getHTML();
+    });
+    
+    this.getHTML = function () {
+        return HTML;
+    };
+    
 }
 
 /* The HTML for a single user, image, and and username 
  * which links to them if they are registered. 
  * is_left dictates whether it floats left or right */
-function User(JSON, is_left){
-	var me = self;
-	me.screen_name = JSON['screen_name'];
-	me.name = JSON['name'];
-	
-	var has_profile = JSON['id'] > 0;
-	var img_size = 40;
-	var user_img = JSON['profile_image_url'].replace('?s=400', '?s=' + img_size);
-	
-	me.HTML  = '<div class="profile_image ' + (is_left ? 'left' : 'right') + '">';
-	me.HTML +=    '<img src="' + user_img + '" alt="sender" ';
-	me.HTML +=     	'class="' + (is_left ? 'left' : 'right') + '" />';
-	me.HTML += 	   '<span class="username ' + (is_left ? 'left' : 'right') + '">';
-	if (has_profile) me.HTML +=      '<a href="http://bnter.com/' + me.screen_name + '">';
-	me.HTML +=      me.screen_name 
-	if (has_profile) me.HTML +='</a>';
-	me.HTML += '</span>';
-	me.HTML += '</div>';
-	
-	me.getScreenName = function() {
-		return me.screen_name;
-	}
-	
-	me.getHTML = function() {
-		
-		return me.HTML;
-	}
-	
-	return me;
+function User(JSON, is_left) {
+    var  has_profile, img_size, user_img;
+
+    this.screen_name = JSON.screen_name;
+    this.name = JSON.name;
+    
+    has_profile = JSON.id > 0;
+    img_size = 40;
+    user_img = JSON.profile_image_url.replace('?s=400', '?s=' + img_size);
+    
+    this.HTML  = '<div class="profile_image ' + (is_left ? 'left' : 'right') + '">';
+    this.HTML +=    '<img src="' + user_img + '" alt="sender" ';
+    this.HTML +=      'class="' + (is_left ? 'left' : 'right') + '" />';
+    this.HTML +=     '<span class="username ' + (is_left ? 'left' : 'right') + '">';
+    if (has_profile) { 
+        this.HTML +=      '<a href="http://bnter.com/' + this.screen_name + '">';
+    }
+    this.HTML += this.screen_name;
+    if (has_profile) { 
+        this.HTML += '</a>';
+    }
+    this.HTML += '</span>';
+    this.HTML += '</div>';
+    
+    this.getScreenName = function () {
+        return this.screen_name;
+    };
+    
+    this.getHTML = function () {
+        return this.HTML;
+    };
+    
 }
 
-/* HTML for all the messages in a conversation */
-function Messages(JSON, left_user){
-	messages = [];
-	var HTML = '';
-	
-	$.each(JSON, function(index, value) { 
-  		messages[index] = new Message(value, left_user); 
-		HTML += messages[index].getHTML();
-	});
-	
-	self.getHTML = function() {
-		return HTML;
-	}
-	
-	return self;
+/* A single conversation, all the messages involved between
+ * 2 users, and also the display for the users themselves displayed 
+ * underneath the messages */
+function Conversation(JSON, options) {
+    var timestamp, user1, left_user, user2, messages, HTML;
+    timestamp = JSON.unix_timestamp;
+    user1 = new User(JSON.user, true);
+    left_user = user1.getScreenName();
+    user1 = user1.getHTML();
+    user2 = new User(JSON.user_two, false).getHTML();
+    
+    messages = new Messages(JSON.messages, left_user);
+    
+    HTML = '<div class="conversation">';
+    HTML += messages.getHTML();
+    HTML += user1 + user2;
+    HTML += '<div class="clear"></div>';
+    HTML += '<span class="timestamp">' + unixToPrettyDate(timestamp) + '</span>';
+    HTML += '</div>';
+    HTML = $xx(HTML);
+    
+    this.getHTML = function () {
+        return HTML;
+    };
+    
 }
 
-/* HTML for a single message */
-function Message(JSON, left_user) {
-	var text = JSON['text'];
-	var sender = JSON['sender'];
-	var is_left = sender == left_user;
-	var img_size = 75;
-	var sender_img = JSON['profile_image_url'].replace('?s=400', '?s=' + img_size);
+/* The HTML for all the conversations displayed.  */
+function Conversations(options) {
+    var username = options.username, count = options.count, HTML, url, c;
+    
+    url = 'http://bnterprofiler.appspot.com/bnter?user_screen_name=' + username;
+    //url = 'js/sampleresponse.js?';
+    //this case needs to be here for the demo to work properly.;
+    if (document.URL.toLowerCase().indexOf('bnterprofiler.appspot.com') === -1) {
+        url += '&callback=?';
+    }
 
-	var HTML = '<div class="message ' + (is_left ? 'left' : 'right') + '" >';
-	HTML +=    '<div class="top"></div>';
-	HTML +=    '<div class="middle"><span class="content">' + text + '</span></div>';
-	HTML +=    '<div class="bottom"></div>';
-	HTML += '</div>';
-	
-	self.getHTML = function() {
-		return HTML;
-	}
-	
-	return self;
+    HTML = $xx('<div id="conversations"></div>');
+
+    $xx.getJSON(url, function (JSON) {
+        
+        $xx.each(JSON.conversations, function (index, value) { 
+            if (index >= count) {
+                return;
+            }
+            c = new Conversation(value); 
+            HTML.append(c.getHTML());
+        });
+    });
+    
+    return HTML;
 }
 
+/* The top level profile object.  Builds itself on existing div,
+ * <div id='bnterprofile'>, and inserts the rest of the HTML dynamically */
+function BnterProfiler(options) {
+    var username, count, eProfile, HTML, eHeader, conversations;    
+    username = options.username;
+    count = options.count;
+    eProfile = $xx('#bnterprofile');
+    
+    HTML  = "<div id='bnter_header'>";
+    HTML += '<p id="username" class="left">';
+    HTML += '<a href="http://www.bnter.com/' + username + '">' + username + '</a></p>';
+    HTML += '<a href="http://www.bnter.com"><img alt="" src="http://bnter.com/web/assets/images/logo-small-2.png" class="right"></a>';
+    HTML += '<div class="clear"></div></div>';
+    
+    eHeader = $xx(HTML);
+
+    conversations = new Conversations(options);
+    
+    eProfile.append(eHeader);
+    eProfile.append(conversations);
+    
+    this.settings = new Settings(options);
+    
+    this.setProperty = function (property, value) {
+        this.settings.setSetting(property, value);
+    };
+    
+    this.getProperties = function () {
+        return this.settings.getSettings();
+    };
+    
+}

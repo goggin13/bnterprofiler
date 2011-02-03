@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>Bnter Profile Widget</title>
+</head>
+
+<body>
+	
+<script src="http://localhost:8080/js/bnterprofiler.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.css" />
+<script type="text/javascript">
+
+var options = {"username":"laurenleto", "width":"270px", "count":"3", "shell_background":"#ede1e1", "shell_color":"#48ff05", "conversation_background":"#1a1717", "link_color":"#ff6a00", "message_right_color":"#000000", "message_left_color":"#000000", };
+
+$(document).ready(function(){ new BnterProfiler(options); });
+
+</script>
+<div id="bnterprofile"></div>
+
+<script src="http://widgets.twimg.com/j/2/widget.js"></script>
+
+</body>
+</html>

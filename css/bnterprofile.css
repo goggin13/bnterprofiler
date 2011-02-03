@@ -63,7 +63,7 @@
 }
 
 #bnterprofile .profile_image.right{
-	margin:-40px 10px 5px 0px;
+	margin:0px 10px 5px 0px;
 }
 #bnterprofile .profile_image.left{
 	margin:0px 0px 10px 5px;
@@ -89,11 +89,18 @@
   border-radius: 12px; /* Opera 10.5, IE 9 */
 }
 
-
+#bnterprofile .timestamp{
+	font-size: 0.8em;
+    font-style: italic;
+    padding-left: 8px;
+}
 
 #bnterprofile .left{ float:left; text-align:left;}
-#bnterprofile .right{float:right; text-align:right;}
+#bnterprofile .right{float:right; text-align:left;}
 
+#bnterprofile a{
+text-decoration: none;
+}
 #bnterprofile #username img{
 	float:left;
 }
