@@ -141,29 +141,32 @@ function User(JSON, is_left) {
     
     has_profile = JSON.id > 0;
     img_size = 40;
-    user_img = JSON.profile_image_url.replace('?s=400', '?s=' + img_size);
-    
-    this.HTML  = '<div class="profile_image ' + (is_left ? 'left' : 'right') + '">';
-    this.HTML +=    '<img src="' + user_img + '" alt="sender" ';
-    this.HTML +=      'class="' + (is_left ? 'left' : 'right') + '" />';
-    this.HTML +=     '<span class="username ' + (is_left ? 'left' : 'right') + '">';
-    if (has_profile) { 
-        this.HTML +=      '<a href="http://bnter.com/' + this.screen_name + '">';
-    }
-    this.HTML += this.screen_name;
-    if (has_profile) { 
-        this.HTML += '</a>';
-    }
-    this.HTML += '</span>';
-    this.HTML += '</div>';
-    
+    this.user_img = JSON.profile_image_url.replace('?s=400', '?s=' + img_size) + '?s=40';
+
+	this.getScreenNameHTML = function(){
+		var HTML =     '<span class="username ' + (is_left ? 'left' : 'right') + '">';
+	    if (has_profile) { 
+	        HTML +=      '<a href="http://bnter.com/' + this.screen_name + '">';
+	    }
+	    HTML += this.screen_name;
+	    if (has_profile) { 
+	        HTML += '</a>';
+	    }
+	    HTML += '</span>';
+		return HTML;
+	}
+	
+	this.getProfileImageHTML = function(){
+	    var HTML;
+		HTML = '<img class="profile_image ' + (is_left ? 'left' : 'right') + '"'
+ 		HTML += ' src="' + this.user_img + '" alt="sender" />';	
+		return HTML;
+	}
+
     this.getScreenName = function () {
         return this.screen_name;
     };
-    
-    this.getHTML = function () {
-        return this.HTML;
-    };
+
     
 }
 
@@ -171,18 +174,23 @@ function User(JSON, is_left) {
  * 2 users, and also the display for the users themselves displayed 
  * underneath the messages */
 function Conversation(JSON, options) {
-    var timestamp, user1, left_user, user2, messages, HTML;
+    var timestamp, left_user, messages, HTML, left_profile, left_screenname, right_profile, right_screenname;
     timestamp = JSON.unix_timestamp;
+
     user1 = new User(JSON.user, true);
     left_user = user1.getScreenName();
-    user1 = user1.getHTML();
-    user2 = new User(JSON.user_two, false).getHTML();
-    
+	left_profile = user1.getProfileImageHTML();
+	left_screenname = user1.getScreenNameHTML();
+	
+    user2 = new User(JSON.user_two, false);
+    right_profile = user2.getProfileImageHTML();
+	right_screenname = user2.getScreenNameHTML();
+	
     messages = new Messages(JSON.messages, left_user);
     
     HTML = '<div class="conversation">';
     HTML += messages.getHTML();
-    HTML += user1 + user2;
+    HTML += '<div class="users">' + left_profile + left_screenname + right_profile + right_screenname + '</div>';
     HTML += '<div class="clear"></div>';
     HTML += '<span class="timestamp">' + unixToPrettyDate(timestamp) + '</span>';
     HTML += '</div>';

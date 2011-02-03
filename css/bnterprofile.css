@@ -54,11 +54,8 @@
 	overflow: hidden;
 }
 
-#bnterprofile .profile_image img{
-	width:40px;
-}
-
 #bnterprofile .profile_image{
+	width:40px;
 	margin:5px 0px;
 }
 
@@ -68,14 +65,11 @@
 #bnterprofile .profile_image.left{
 	margin:0px 0px 10px 5px;
 }
-#bnterprofile .profile_image.left span{
+#bnterprofile .username.left{
 	margin-left:5px;
 }
-#bnterprofile .profile_image.right span{
-	margin-right:5px;
-}
 #bnterprofile .username.right{
-	margin-top:20px;
+	margin-right:5px;
 }
 
 #bnterprofile .clear{
