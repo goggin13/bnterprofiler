@@ -10,6 +10,8 @@
  */
 $xx(document).ready(function(){
 	
+	alert('hello world');
+	
 	var options, widget;
 	
 	options = {
