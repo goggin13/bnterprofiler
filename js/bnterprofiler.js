@@ -6,7 +6,7 @@ var $xx = jQuery.noConflict(true);
  * all of the relevant classes */
 function Settings(options) {
     
-    //$xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
+    $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
 
     this.Init = function (options) {
         this.options = options;
@@ -39,7 +39,7 @@ function Settings(options) {
         
         css.attr('id', 'bnterprofile_styles');
         css.html(HTML);
-        //$xx('head').append(css);
+        $xx('head').append(css);
     };
     
     this.Init(options);
@@ -76,6 +76,8 @@ function prettyDate(time) {
 		day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
 }
 
+/* takes a unix timestamp and returns the common and sexier (some think)
+ * version in the "ago" format */
 function unixToPrettyDate(unix_timestamp) {
     var date, year, day, month, hours, minutes, seconds, formattedTime;
     date = new Date(unix_timestamp * 1000);
@@ -222,7 +224,7 @@ function Conversations(options) {
                 return;
             }
             c = new Conversation(value); 
-            //HTML.append(c.getHTML());
+            HTML.append(c.getHTML());
         });
     });
     
@@ -247,8 +249,8 @@ function BnterProfiler(options) {
 
     conversations = new Conversations(options);
     
-    //eProfile.append(eHeader);
-    //eProfile.append(conversations);
+    eProfile.append(eHeader);
+    eProfile.append(conversations);
     
     this.settings = new Settings(options);
     
