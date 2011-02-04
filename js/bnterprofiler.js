@@ -6,7 +6,7 @@ var $xx = jQuery.noConflict(true);
  * all of the relevant classes */
 function Settings(options) {
     
-    //$xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
+    $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
 
     this.Init = function (options) {
         this.options = options;
@@ -39,7 +39,7 @@ function Settings(options) {
         
         css.attr('id', 'bnterprofile_styles');
         css.html(HTML);
-        //$xx('head').append(css);
+        $xx('head').append(css);
     };
     
     this.Init(options);
@@ -221,8 +221,9 @@ function Conversations(options) {
             if (index >= count) {
                 return;
             }
-            c = new Conversation(value); 
-            //HTML.append(c.getHTML());
+            c = new Conversation(value);
+			alert(c.getHTML());
+            HTML.append(c.getHTML());
         });
     });
     
@@ -232,6 +233,7 @@ function Conversations(options) {
 /* The top level profile object.  Builds itself on existing div,
  * <div id='bnterprofile'>, and inserts the rest of the HTML dynamically */
 function BnterProfiler(options) {
+
     var username, count, eProfile, HTML, eHeader, conversations;    
     username = options.username;
     count = options.count;
@@ -247,8 +249,8 @@ function BnterProfiler(options) {
 
     conversations = new Conversations(options);
     
-    //eProfile.append(eHeader);
-    //eProfile.append(conversations);
+    eProfile.append(eHeader);
+    eProfile.append(conversations);
     
     this.settings = new Settings(options);
     
