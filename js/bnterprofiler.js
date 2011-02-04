@@ -5,7 +5,7 @@ var $xx = jQuery.noConflict(true);
  * are available to customize.  Directly sets CSS for
  * all of the relevant classes */
 function Settings(options) {
-    
+
     $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
 
     this.Init = function (options) {
@@ -176,7 +176,7 @@ function User(JSON, is_left) {
  * 2 users, and also the display for the users themselves displayed 
  * underneath the messages */
 function Conversation(JSON, options) {
-    var timestamp, left_user, messages, HTML, left_profile, left_screenname, right_profile, right_screenname;
+    var timestamp, left_user, messages, HTML, left_profile, left_screenname, right_profile, right_screenname, user1, user2;
     timestamp = JSON.unix_timestamp;
 
     user1 = new User(JSON.user, true);
@@ -197,7 +197,7 @@ function Conversation(JSON, options) {
     HTML += '<span class="timestamp">' + unixToPrettyDate(timestamp) + '</span>';
     HTML += '</div>';
     HTML = $xx(HTML);
-    
+
     this.getHTML = function () {
         return HTML;
     };
@@ -223,8 +223,6 @@ function Conversations(options) {
             if (index >= count) {
                 return;
             }
-            c = new Conversation(value);
-			alert(c.getHTML());
             c = new Conversation(value); 
             HTML.append(c.getHTML());
         });
@@ -256,7 +254,7 @@ function BnterProfiler(options) {
     eProfile.append(conversations);
     
     this.settings = new Settings(options);
-    
+
     this.setProperty = function (property, value) {
         this.settings.setSetting(property, value);
     };
