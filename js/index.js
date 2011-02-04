@@ -13,7 +13,7 @@ $xx(document).ready(function(){
 					"conversation_background":"#1a1717", 
 					"link_color":"#ff6a00", 
 					"message_right_color":"#591717", 
-					"message_left_color":"#000000", 
+					"message_left_color":"#000000" 
 					};
 	
 	bp = new BnterProfiler(options);
