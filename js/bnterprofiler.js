@@ -76,6 +76,8 @@ function prettyDate(time) {
 		day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
 }
 
+/* takes a unix timestamp and returns the common and sexier (some think)
+ * version in the "ago" format */
 function unixToPrettyDate(unix_timestamp) {
     var date, year, day, month, hours, minutes, seconds, formattedTime;
     date = new Date(unix_timestamp * 1000);
@@ -223,6 +225,7 @@ function Conversations(options) {
             }
             c = new Conversation(value);
 			alert(c.getHTML());
+            c = new Conversation(value); 
             HTML.append(c.getHTML());
         });
     });
