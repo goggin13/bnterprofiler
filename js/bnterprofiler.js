@@ -144,13 +144,13 @@ function User(JSON, is_left) {
     img_size = 40;
     this.user_img = JSON.profile_image_url.replace('?s=400', '?s=' + img_size);
 
-	this.getScreenNameHTML = function(){
+	this.getScreenNameHTML = function(asLink){
 		var HTML =     '<span class="username ' + (is_left ? 'left' : 'right') + '">';
-	    if (has_profile) { 
+	    if (has_profile && asLink) { 
 	        HTML +=      '<a href="http://bnter.com/' + this.screen_name + '">';
 	    }
 	    HTML += this.screen_name;
-	    if (has_profile) { 
+	    if (has_profile && asLink) { 
 	        HTML += '</a>';
 	    }
 	    HTML += '</span>';
@@ -181,11 +181,11 @@ function Conversation(JSON, options) {
     user1 = new User(JSON.user, true);
     left_user = user1.getScreenName();
 	left_profile = user1.getProfileImageHTML();
-	left_screenname = user1.getScreenNameHTML();
+	left_screenname = user1.getScreenNameHTML(true);
 	
     user2 = new User(JSON.user_two, false);
     right_profile = user2.getProfileImageHTML();
-	right_screenname = user2.getScreenNameHTML();
+	right_screenname = user2.getScreenNameHTML(true);
 	
     messages = new Messages(JSON.messages, left_user);
     
@@ -195,6 +195,41 @@ function Conversation(JSON, options) {
     HTML += '<div class="clear"></div>';
     HTML += '<span class="timestamp">' + unixToPrettyDate(timestamp) + '</span>';
     HTML += '</div>';
+    HTML = $xx(HTML);
+
+    this.getHTML = function () {
+        return HTML;
+    };
+    
+}
+
+/* A single conversation, all the messages involved between
+ * 2 users, and also the display for the users themselves displayed 
+ * underneath the messages */
+function Teaser(JSON, options) {
+    var timestamp, left_user, messages, HTML, left_profile, left_screenname, right_profile, right_screenname, user1, user2;
+    timestamp = JSON.unix_timestamp;
+
+    user1 = new User(JSON.user, true);
+    left_user = user1.getScreenName();
+	left_profile = user1.getProfileImageHTML();
+	left_screenname = user1.getScreenNameHTML(false);
+	
+    user2 = new User(JSON.user_two, false);
+    right_profile = user2.getProfileImageHTML();
+	right_screenname = user2.getScreenNameHTML(false);
+	//right_screenname = user2.getScreenName();
+	
+    messages = new Messages(JSON.messages, left_user);
+    
+	HTML = '<div class="conversation"><a  href="http://bnter.com/convo/' + JSON.id + '">';
+	HTML += '<span class="timestamp">' + unixToPrettyDate(timestamp) + '</span>';
+    HTML += '<div class="clear"></div>';
+    HTML += left_profile + left_screenname + right_profile + right_screenname;
+    HTML += '<div class="clear"></div>';
+    //HTML += "a conversation between " + right_screenname + " and me";
+    HTML += '</a></div>';
+
     HTML = $xx(HTML);
 
     this.getHTML = function () {
@@ -217,17 +252,23 @@ function Conversations(options) {
 
     HTML = $xx('<div id="conversations"></div>');
 
+	function MakeConversationFrom (value) {
+		return ( options.type === 'teaser' ? new Teaser(value, options) : new Conversation(value, options));
+	}
+
     $xx.getJSON(url, function (JSON) {
         
         $xx.each(JSON.conversations, function (index, value) { 
             if (index >= count) {
                 return;
             }
-            c = new Conversation(value); 
+            c = MakeConversationFrom(value)  
             HTML.append(c.getHTML());
         });
     });
     
+
+
     return HTML;
 }
 

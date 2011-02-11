@@ -42,10 +42,7 @@
 
 #bnterprofile .message .middle{
 	background: url("../message_bubble.png") repeat-y scroll -534px 0 transparent;
-	/*margin: -22px 0 0;
-    padding: 0 20px 3px 18px;*/	
 	padding:0px 10px;
-
 }
 
 #bnterprofile .content{
@@ -55,6 +52,7 @@
 #bnterprofile .profile_image{
 	width:40px;
 	margin:5px 0px;
+	color: transparent;
 }
 
 #bnterprofile .profile_image.right{
@@ -75,11 +73,16 @@
 	clear:both;
 }
 
+#bnterprofile .teaser a{
+	color:transparent;
+}
+
 #bnterprofile .conversation{
-	margin:5px 0px;
+  margin:5px 0px;
   -moz-border-radius: 12px; /* FF1+ */
   -webkit-border-radius: 12px; /* Saf3+, Chrome */
   border-radius: 12px; /* Opera 10.5, IE 9 */
+  padding-top:10px;
 }
 
 #bnterprofile .timestamp{

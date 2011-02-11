@@ -21,14 +21,20 @@ $xx(document).ready(function(){
 				"conversation_background":"#1a1717", 
 				"link_color":"#ff6a00", 
 				"message_right_color":"#591717", 
-				"message_left_color":"#000000" 
+				"message_left_color":"#000000",
 				};
-	
-	widget = new BnterProfiler(options);
-	form = new WidgetForm(widget);
 
+	SetUp(options, "full")
 });
 
+function SetUp(options, type){
+	$xx('#bnterprofile').html('');
+
+	options.type = type;
+
+	widget = new BnterProfiler(options);
+	form = new WidgetForm(widget);
+}
 
 /* 
  * This object is the form for manipulating the demo widget, and 
@@ -61,6 +67,8 @@ function WidgetForm(widget) {
 				$xx('.current_color_chooser').change();
 			}
 		});
+		
+		
 	}
 	
 	// creates a javascript hash of the options, suitable to insert in the script
@@ -85,7 +93,17 @@ function WidgetForm(widget) {
 		
 			options[property] = value;
 		});
+		options['type'] = $xx("input[name=type]:checked").val(); 
 		return options;	
+	}
+	
+	// get options suitable for applying to the widget on the fly
+	GetFilteredOptions = function () {
+		var options = GetOptions();
+		options.username = 'laurenleto';
+		options.width = "270px"
+		options.count = '3';
+		return options;
 	}
 	
 	// given the JS string of options, makes the script for output to the user
@@ -153,6 +171,18 @@ function WidgetForm(widget) {
 		$xx(this).addClass('current_color_chooser');
 	});
 		
+	// the type choosers toggle the display and show/hide some of the options
+ 	$xx('.type_chooser').click(function(){
+		var val;
+		val = $xx(this).val();
+		if ( val === 'teaser' ){
+			$xx('.full_only').hide();
+		} else {
+			$xx('.full_only').show();
+		}
+		
+		SetUp(GetFilteredOptions(), val);
+	});
 	
 	
 }

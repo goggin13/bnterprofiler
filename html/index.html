@@ -28,8 +28,8 @@
 	<tr>
 	<th><label for='type'>Conversation display type</label></th>
 		<td>
-			<input type="radio" name="type" value="full" checked='checked' /> Full
-			<input type="radio" name="type" value="teaser" /> Teaser
+			<input id="type_full" class="type_chooser" type="radio" name="type" value="full" checked='checked' /> Full
+			<input id="type_teaser" class="type_chooser" type="radio" name="type" value="teaser" /> Teaser
 		</td>
 	</tr>
 
@@ -40,7 +40,7 @@
 	</td>
 	</tr>
 
-	<tr>
+	<tr class='full_only'>
 	<th><label for='shell_color'>Shell Color</label></th>
 	<td><input class='bp_option color_chooser' type='text' name='shell_color' value='48ff05'/>
 		<div class='color_demo'></div>
@@ -61,14 +61,14 @@
 	</td>
 	</tr>
 
-	<tr>
+	<tr class='full_only'>
 	<th><label for='message_right_color'>Right Message Color</label></th>
 	<td><input class='bp_option color_chooser' type='text' name='message_right_color' value='000000'/>
 		<div class='color_demo'></div>
 	</td>
 	</tr>
 
-	<tr>
+	<tr class='full_only'>
 	<th><label for='message_left_color'>Left Message Color</label></th>
 	<td><input class='bp_option color_chooser' type='text' name='message_left_color' value='000000'/>
 		<div class='color_demo'></div>
@@ -83,7 +83,7 @@
 
 </table>
 </form>
-<textarea cols='100' rows='100' id='result_code'></textarea>
+<textarea cols='100' rows='20' id='result_code'></textarea>
 
 <div class='clear'></div>
 {% include "footer.html" %}
