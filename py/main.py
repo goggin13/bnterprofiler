@@ -7,6 +7,7 @@
 # commands to start server and update
 # dev_appserver.py /Users/mattgoggin/Desktop/CS/bnterprofiler
 # appcfg.py update /Users/mattgoggin/Desktop/CS/bnterprofiler
+# java -jar yuicompressor-2.4.2.jar -o bnterprofiler.min.js  bnterprofiler.js 
 
 import os
 import logging

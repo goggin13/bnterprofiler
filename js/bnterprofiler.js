@@ -6,7 +6,7 @@ var $xx = jQuery.noConflict(true);
  * all of the relevant classes */
 function Settings(options) {
 
-    $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler2.appspot.com/css/bnterprofile.min.css" />');
+    $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
 
     this.Init = function (options) {
         this.options = options;
