@@ -10,9 +10,7 @@
 	padding:5px;
 }
 
-#bnterprofile #bnter_header a img {
-	color:transparent;
-}
+#bnter_header #bnter_header_link{color:transparent;}
 
 #bnterprofile .message{
 	padding:5px;
@@ -96,6 +94,7 @@
 #bnterprofile a{
 text-decoration: none;
 }
+
 #bnterprofile #username img{
 	float:left;
 }

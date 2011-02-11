@@ -8,6 +8,7 @@
 *The colors will update live as you adjust, but the username, width, and # of conversations do not update in the preview
 </p>
 
+<form action=''>
 <table>
 	<tr>
 	<th><label for='username'>Username</label></th>
@@ -23,7 +24,15 @@
 	<th><label for='count'>Number of conversations (0-10)</label></th>
 	<td><input id='conversation_count' class='bp_option' type='text' name='count' value='3'/></td>
 	</tr>
-	
+
+	<tr>
+	<th><label for='type'>Conversation display type</label></th>
+		<td>
+			<input type="radio" name="type" value="full" checked='checked' /> Full
+			<input type="radio" name="type" value="teaser" /> Teaser
+		</td>
+	</tr>
+
 	<tr>
 	<th><label for='shell_background'>Shell Background</label></th>
 	<td><input class='bp_option color_chooser' type='text' name='shell_background' value='666666'/>
@@ -73,7 +82,7 @@
 	</tr>
 
 </table>
-
+</form>
 <textarea cols='100' rows='100' id='result_code'></textarea>
 
 <div class='clear'></div>

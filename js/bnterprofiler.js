@@ -6,7 +6,7 @@ var $xx = jQuery.noConflict(true);
  * all of the relevant classes */
 function Settings(options) {
 
-    $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
+    $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler2.appspot.com/css/bnterprofile.min.css" />');
 
     this.Init = function (options) {
         this.options = options;
@@ -22,7 +22,7 @@ function Settings(options) {
     };
      
     this.CreateStyles = function () {
-        var HTML = '', css = $xx('<style />');
+        var HTML = '', css;
         
         HTML += '#bnterprofile{ width:' + this.options.width + ';';
         HTML += 'background:' + this.options.shell_background + ';';
@@ -37,8 +37,7 @@ function Settings(options) {
             $xx('#bnterprofile_styles').remove();
         }
         
-        css.attr('id', 'bnterprofile_styles');
-        css.html(HTML);
+        css  = $xx("<style id='bnterprofile_styles'>" + HTML + "<style />");
         $xx('head').append(css);
     };
     
@@ -210,6 +209,7 @@ function Conversations(options) {
     
     url = 'http://bnterprofiler.appspot.com/bnter?user_screen_name=' + username;
     //url = 'js/sampleresponse.js?';
+
     //this case needs to be here for the demo to work properly.;
     if (document.URL.toLowerCase().indexOf('bnterprofiler.appspot.com') === -1) {
         url += '&callback=?';
@@ -243,7 +243,7 @@ function BnterProfiler(options) {
     HTML  = "<div id='bnter_header'>";
     HTML += '<p id="username" class="left">';
     HTML += '<a href="http://www.bnter.com/' + username + '">' + username + '</a></p>';
-    HTML += '<a href="http://www.bnter.com"><img alt="" src="http://bnter.com/web/assets/images/logo-small-2.png" class="right"></a>';
+    HTML += '<a id="bnter_header_link" href="http://www.bnter.com"><img alt="" src="http://bnter.com/web/assets/images/logo-small-2.png" class="right"></a>';
     HTML += '<div class="clear"></div></div>';
     
     eHeader = $xx(HTML);
