@@ -23,6 +23,10 @@ from django.utils import simplejson as json
 # responds to requests of the form 
 # /bnter?user_screen_name=USERNAME
 class APIWrapper(webapp.RequestHandler):
+   def formatJSON(self, JSON, callback):
+       if callback:
+           JSON = '%s(%s)' % (callback, JSON)
+       return JSON
    def get(self):
        username = self.request.get('user_screen_name')
        callback = self.request.get('callback')
@@ -34,17 +38,13 @@ class APIWrapper(webapp.RequestHandler):
     
        JSON = memcache.get(url)
        if JSON:
-           JSON = '%s(%s)' % (callback, JSON)
-           logging.info(callback)
-           self.response.out.write(JSON)
+           self.response.out.write(self.formatJSON(JSON, callback))
            return
         
        result = urlfetch.fetch(url)
        if result.status_code == 200:
-           JSON = '%s(%s)' % (callback, result.content)
            memcache.set(url, result.content, 60 * 30)
-           logging.info(callback)
-           self.response.out.write(JSON)
+           self.response.out.write(self.formatJSON(result.content, callback))
 
 # These two classes simply write out the static HTML
 # for the two pages, using the helper WriteTemplate
