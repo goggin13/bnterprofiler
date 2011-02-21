@@ -1,37 +1,39 @@
+// http://www.jslint.com/
+/*global jQuery, browser: true, devel: true */
 
 var $xx = jQuery.noConflict(true);
 
 /* Object responsible for setting all of the colors that
  * are available to customize.  Directly sets CSS for
  * all of the relevant classes */
-function Settings(options) {
+var Settings = function (options) {
+    var that = {};
 
-    $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
-
-    this.Init = function (options) {
-        this.options = options;
+    that.init = function (options) {
+        that.options = options;
+        that.createStyles();
     };
     
-    this.setSetting = function (property, value) {
-        this.options[property] = value;
-        this.CreateStyles();
+    that.setSetting = function (property, value) {
+        that.options[property] = value;
+        that.CreateStyles();
     };
     
-    this.getSettings = function () {
-        return this.options;
+    that.getSettings = function () {
+        return that.options;
     };
      
-    this.CreateStyles = function () {
+    that.createStyles = function () {
         var HTML = '', css;
         
-        HTML += '#bnterprofile{ width:' + this.options.width + ';';
-        HTML += 'background:' + this.options.shell_background + ';';
-        HTML += 'color:' + this.options.shell_color + ';}';
+        HTML += '#bnterprofile{ width:' + that.options.width + ';';
+        HTML += 'background:' + that.options.shell_background + ';';
+        HTML += 'color:' + that.options.shell_color + ';}';
         
-        HTML += '#bnterprofile .message.left{ color:' + this.options.message_left_color + ';}';
-        HTML += '#bnterprofile .message.right{ color:' + this.options.message_right_color + ';}';
-        HTML += '#bnterprofile .conversation{background: ' + this.options.conversation_background + ';}';
-        HTML += '#bnterprofile a{ color: ' + this.options.link_color + '}';
+        HTML += '#bnterprofile .message.left{ color:' + that.options.message_left_color + ';}';
+        HTML += '#bnterprofile .message.right{ color:' + that.options.message_right_color + ';}';
+        HTML += '#bnterprofile .conversation{background: ' + that.options.conversation_background + ';}';
+        HTML += '#bnterprofile a{ color: ' + that.options.link_color + '}';
         
         if ($xx('#bnterprofile_styles').length > 0) {
             $xx('#bnterprofile_styles').remove();
@@ -39,12 +41,12 @@ function Settings(options) {
         
         css  = $xx("<style id='bnterprofile_styles'>" + HTML + "<style />");
         $xx('head').append(css);
+        $xx('head').append('<link rel="stylesheet" type="text/css" href="http://bnterprofiler.appspot.com/css/bnterprofile.min.css" />');
     };
-    
-    this.Init(options);
-    this.CreateStyles();
-    
-}
+ 
+    that.init(options);        
+    return that;
+};
 
 
 /*
@@ -64,15 +66,20 @@ function prettyDate(time) {
         return;
     }
             
-	return day_diff == 0 && (
-			diff < 60 && "just now" ||
-			diff < 120 && "1 minute ago" ||
-			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
-			diff < 7200 && "1 hour ago" ||
-			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
-		day_diff == 1 && "Yesterday" ||
-		day_diff < 7 && day_diff + " days ago" ||
-		day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
+    return  (
+                (day_diff === 0) && 
+                (
+                    (diff < 60 && "just now") ||
+                    (diff < 120 && "1 minute ago") ||
+                    (diff < 3600 && Math.floor( diff / 60 ) + " minutes ago") ||
+                    (diff < 7200 && "1 hour ago") ||
+                    (diff < 86400 && Math.floor( diff / 3600 ) + " hours ago")
+                )
+            ) 
+            ||
+            (day_diff === 1 && "Yesterday") ||
+            (day_diff < 7 && day_diff + " days ago") ||
+            (day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago");
 }
 
 /* takes a unix timestamp and returns the common and sexier (some think)
@@ -91,10 +98,24 @@ function unixToPrettyDate(unix_timestamp) {
     return prettyDate(formattedTime);
 }
 
+var Element = function() {
+    var that = {},
+        HTML = '';
+    
+    that.getHTML = function () {
+        return HTML;
+    };
+    
+    that.setHTML = function (newHTML) {
+        HTML = newHTML;
+    };
+    return that;
+};
 
 /* HTML for a single message */
-function Message(JSON, left_user) {
-    var text, sender, is_left, img_size, sender_img, HTML;
+var Message = function (JSON, left_user) {
+    var text, sender, is_left, img_size, sender_img, HTML, that;
+    that = Element();
     text = JSON.text;
     sender = JSON.sender;
     is_left = sender === left_user;
@@ -108,88 +129,79 @@ function Message(JSON, left_user) {
     HTML += '</div>';
     HTML += '<div class="clear"></div>';
     
-    this.getHTML = function () {
-        return HTML;
-    };
-    
-}
+    that.setHTML(HTML);
+    return that;
+};
 
 /* HTML for all the messages in a conversation */
-function Messages(JSON, left_user) {
-    var messages, HTML;
-    messages = [];
-    HTML = '';
-    
+var Messages = function (JSON, left_user) {
+    var messages = [], 
+        HTML = '', 
+        that = Element();
+       
     $xx.each(JSON, function (index, value) { 
-        messages[index] = new Message(value, left_user); 
+        messages[index] = Message(value, left_user); 
         HTML += messages[index].getHTML();
     });
     
-    this.getHTML = function () {
-        return HTML;
-    };
-    
-}
+    that.setHTML(HTML);
+    return that;
+};
 
 /* The HTML for a single user, image, and and username 
  * which links to them if they are registered. 
  * is_left dictates whether it floats left or right */
-function User(JSON, is_left) {
-    var  has_profile, img_size, user_img;
-
-    this.screen_name = JSON.screen_name;
-    this.name = JSON.name;
+var User = function (JSON, is_left) {
+    var has_profile = JSON.id > 0, 
+        img_size = 40, 
+        user_img = JSON.profile_image_url.replace('?s=400', '?s=' + img_size),
+        that = {},
+        screen_name = JSON.screen_name;
     
-    has_profile = JSON.id > 0;
-    img_size = 40;
-    this.user_img = JSON.profile_image_url.replace('?s=400', '?s=' + img_size);
-
-	this.getScreenNameHTML = function(asLink){
-		var HTML =     '<span class="username ' + (is_left ? 'left' : 'right') + '">';
-	    if (has_profile && asLink) { 
-	        HTML +=      '<a href="http://bnter.com/' + this.screen_name + '">';
-	    }
-	    HTML += this.screen_name;
-	    if (has_profile && asLink) { 
-	        HTML += '</a>';
-	    }
-	    HTML += '</span>';
-		return HTML;
-	}
-	
-	this.getProfileImageHTML = function(){
-	    var HTML;
-		HTML = '<img class="profile_image ' + (is_left ? 'left' : 'right') + '"'
- 		HTML += ' src="' + this.user_img + '" alt="sender" />';	
-		return HTML;
-	}
-
-    this.getScreenName = function () {
-        return this.screen_name;
+    that.getScreenNameHTML = function (asLink) {
+        var HTML =     '<span class="username ' + (is_left ? 'left' : 'right') + '">';
+        if (has_profile && asLink) { 
+            HTML +=      '<a href="http://bnter.com/' + screen_name + '">';
+        }
+        HTML += screen_name;
+        if (has_profile && asLink) { 
+            HTML += '</a>';
+        }
+        HTML += '</span>';
+        return HTML;
+    };
+    
+    that.getProfileImageHTML = function () {
+        var HTML;
+        HTML = '<img class="profile_image ' + (is_left ? 'left' : 'right') + '"';
+        HTML += ' src="' + user_img + '" alt="sender" />';  
+        return HTML;
     };
 
-    
-}
+    that.getScreenName = function () {
+        return screen_name;
+    };
+
+    return that;
+};
 
 /* A single conversation, all the messages involved between
  * 2 users, and also the display for the users themselves displayed 
  * underneath the messages */
-function Conversation(JSON, options) {
-    var timestamp, left_user, messages, HTML, left_profile, left_screenname, right_profile, right_screenname, user1, user2;
-    timestamp = JSON.unix_timestamp;
-
-    user1 = new User(JSON.user, true);
-    left_user = user1.getScreenName();
-	left_profile = user1.getProfileImageHTML();
-	left_screenname = user1.getScreenNameHTML(true);
-	
-    user2 = new User(JSON.user_two, false);
-    right_profile = user2.getProfileImageHTML();
-	right_screenname = user2.getScreenNameHTML(true);
-	
-    messages = new Messages(JSON.messages, left_user);
+var Conversation = function (JSON, options) {
+    var timestamp = JSON.unix_timestamp, 
+        that = Element(),
+        HTML = '', 
+        user1 = User(JSON.user, true),
+        user2 = User(JSON.user_two, false),
+        left_user = user1.getScreenName(),
+        left_profile = user1.getProfileImageHTML(),
+        left_screenname = user1.getScreenNameHTML(true),
+        right_profile = user2.getProfileImageHTML(),
+        right_screenname = user2.getScreenNameHTML(true),
+        messages = Messages(JSON.messages, left_user);
     
-    HTML = '<div class="conversation">';
+    HTML += '<div class="conversation">';
     HTML += messages.getHTML();
     HTML += '<div class="users">' + left_profile + left_screenname + right_profile + right_screenname + '</div>';
     HTML += '<div class="clear"></div>';
@@ -197,111 +209,113 @@ function Conversation(JSON, options) {
     HTML += '</div>';
     HTML = $xx(HTML);
 
-    this.getHTML = function () {
-        return HTML;
-    };
-    
-}
+    that.setHTML(HTML);
+    return that;
+};
 
-/* A single conversation, all the messages involved between
- * 2 users, and also the display for the users themselves displayed 
- * underneath the messages */
-function Teaser(JSON, options) {
-    var timestamp, left_user, messages, HTML, left_profile, left_screenname, right_profile, right_screenname, user1, user2;
-    timestamp = JSON.unix_timestamp;
-
-    user1 = new User(JSON.user, true);
-    left_user = user1.getScreenName();
-	left_profile = user1.getProfileImageHTML();
-	left_screenname = user1.getScreenNameHTML(false);
-	
-    user2 = new User(JSON.user_two, false);
-    right_profile = user2.getProfileImageHTML();
-	right_screenname = user2.getScreenNameHTML(false);
-	//right_screenname = user2.getScreenName();
-	
-    messages = new Messages(JSON.messages, left_user);
+/* A single conversation in teaser form, just the user names
+ * and profile images*/
+var Teaser = function (JSON, options) {
+    var timestamp = JSON.unix_timestamp, 
+        that = Element(),
+        HTML = '', 
+        user1 = User(JSON.user, true),
+        user2 = User(JSON.user_two, false),
+        left_profile = user1.getProfileImageHTML(),
+        left_screenname = user1.getScreenNameHTML(true),
+        right_profile = user2.getProfileImageHTML(),
+        right_screenname = user2.getScreenNameHTML(true);
     
-	HTML = '<div class="conversation"><a  href="http://bnter.com/convo/' + JSON.id + '">';
-	HTML += '<span class="timestamp">' + unixToPrettyDate(timestamp) + '</span>';
+    HTML = '<div class="conversation"><a  href="http://bnter.com/convo/' + JSON.id + '">';
+    HTML += '<span class="timestamp">' + unixToPrettyDate(timestamp) + '</span>';
     HTML += '<div class="clear"></div>';
     HTML += left_profile + left_screenname + right_profile + right_screenname;
     HTML += '<div class="clear"></div>';
-    //HTML += "a conversation between " + right_screenname + " and me";
     HTML += '</a></div>';
 
     HTML = $xx(HTML);
 
-    this.getHTML = function () {
-        return HTML;
-    };
-    
-}
+    that.setHTML(HTML);
+    return that;
+};
 
 /* The HTML for all the conversations displayed.  */
-function Conversations(options) {
-    var username = options.username, count = options.count, HTML, url, c;
-    
-    url = 'http://bnterprofiler.appspot.com/bnter?user_screen_name=' + username;
-    //url = 'js/sampleresponse.js?';
-
-    //this case needs to be here for the demo to work properly.;
-    if (document.URL.toLowerCase().indexOf('bnterprofiler.appspot.com') === -1) {
-        url += '&callback=?';
-    }
-
-    HTML = $xx('<div id="conversations"></div>');
-
-	function MakeConversationFrom (value) {
-		return ( options.type === 'teaser' ? new Teaser(value, options) : new Conversation(value, options));
-	}
-
-    $xx.getJSON(url, function (JSON) {
+var Conversations = function (options, eProfile, cache) {
+    var that = {},
+        count = options.count, 
+        HTML, conversation,
+        url = 'http://bnterprofiler.appspot.com/bnter?user_screen_name=' + options.username;
         
-        $xx.each(JSON.conversations, function (index, value) { 
-            if (index >= count) {
-                return;
+    that.getConversations = function(callback) {
+        
+        function makeConversationFrom (value) {
+            return ( options.type === 'teaser' ? Teaser(value, options) : Conversation(value, options));
+        }
+        
+        if (options.type in cache) {
+            callback(cache[options.type]);
+        } else {
+            //this case needs to be here for the demo to work properly.;
+            if (document.URL.toLowerCase().indexOf('bnterprofiler.appspot.com') === -1) {
+                url += '&callback=?';
             }
-            c = MakeConversationFrom(value)  
-            HTML.append(c.getHTML());
-        });
-    });
+            
+            HTML = $xx('<div id="conversations"></div>');
+            $xx.getJSON(url, function (JSON) {
+                $xx.each(JSON.conversations, function (index, value) { 
+                    if (index >= count) {
+                        return;
+                    }
+                    conversation = makeConversationFrom(value);  
+                    HTML.append(conversation.getHTML());
+                });
+                cache[options.type] = HTML;
+                callback(HTML);
+            });
+        }
+    };
+   
+    that.addHTML = function (HTML){
+        eProfile.append(HTML);
+    };
     
+    that.getConversations(that.addHTML);
+    return that;
+};
 
-
-    return HTML;
-}
 
 /* The top level profile object.  Builds itself on existing div,
  * <div id='bnterprofile'>, and inserts the rest of the HTML dynamically */
-function BnterProfiler(options) {
+var BnterProfiler = function (options) {
+    var that = {},
+        eProfile = $xx('#bnterprofile'), 
+        cache = [],
+        HTML = '', eHeader, conversations, settings;
 
-    var username, count, eProfile, HTML, eHeader, conversations;    
-    username = options.username;
-    count = options.count;
-    eProfile = $xx('#bnterprofile');
-    
     HTML  = "<div id='bnter_header'>";
     HTML += '<p id="username" class="left">';
-    HTML += '<a href="http://www.bnter.com/' + username + '">' + username + '</a></p>';
+    HTML += '<a href="http://www.bnter.com/' + options.username + '">' + options.username + '</a></p>';
     HTML += '<a id="bnter_header_link" href="http://www.bnter.com"><img alt="" src="http://bnter.com/web/assets/images/logo-small-2.png" class="right"></a>';
     HTML += '<div class="clear"></div></div>';
     
     eHeader = $xx(HTML);
-
-    conversations = new Conversations(options);
-    
     eProfile.append(eHeader);
-    eProfile.append(conversations);
-    
-    this.settings = new Settings(options);
+    conversations = Conversations(options, eProfile, cache);
+    settings = Settings(options);
 
-    this.setProperty = function (property, value) {
-        this.settings.setSetting(property, value);
+    that.setProperty = function (property, value) {
+        settings.setSetting(property, value);
     };
     
-    this.getProperties = function () {
-        return this.settings.getSettings();
+    that.getProperties = function () {
+        return settings.getSettings();
     };
     
-}
+    that.setType = function (type) {
+        $xx('#conversations').remove();
+        options.type = type;
+        conversations = Conversations(options, eProfile, cache);
+    };
+    
+    return that;
+};
